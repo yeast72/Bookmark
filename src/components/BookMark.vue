@@ -1,29 +1,34 @@
 <template>
   <div class="hello">
-    <h1>Bookmark</h1>
-    <div v-bind:key="book._id" v-for="book in allBooks">
+    <div v-bind:key="folder.id" v-for="folder in allFolders">
+      <BookFolder v-bind:folder="folder"/>
+    </div>
+
+    <!-- <div v-bind:key="book._id" v-for="book in allBooks">
       <BookItem v-bind:book="book"/>
       <button @click="deleteBook(book._id)" class="del">x</button>
-    </div>
+    </div>-->
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
 import BookItem from "./BookItem.vue";
+import BookFolder from "./BookFolder.vue";
 
 export default {
   name: "BookMark",
-  components: { BookItem },
+  components: { BookItem, BookFolder },
   props: ["books"],
   computed: {
-    ...mapGetters(["allBooks"])
+    ...mapGetters(["allBooks", "allFolders"])
   },
   methods: {
-    ...mapActions(["fetchBooks", "deleteBook"])
+    ...mapActions(["fetchBooks", "deleteBook", "fetchFolders"])
   },
   created() {
     this.fetchBooks();
+    this.fetchFolders();
   }
 };
 </script>

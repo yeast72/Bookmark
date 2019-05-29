@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <Header/>
-    <BookMark></BookMark>
-    <AddBook/>
+    <BookMark/>
   </div>
 </template>
 

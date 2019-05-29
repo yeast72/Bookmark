@@ -18,13 +18,13 @@ const actions = {
     async fetchBooks({
         commit
     }) {
-        const respone = await axios.get("http://localhost:3000/books")
+        const respone = await axios.get("http://localhost:8000/books")
         commit('setBooks', respone.data.books)
     },
     async addBook({
         commit
     }, book) {
-        const respone = await axios.post("http://localhost:3000/book", {
+        const respone = await axios.post("http://localhost:8000/book", {
             book: book
         })
         commit('addBook', respone.data.book)
@@ -32,7 +32,7 @@ const actions = {
     async deleteBook({
         commit
     }, bookId) {
-        const respone = await axios.delete(`http://localhost:3000/book/${bookId}`)
+        const respone = await axios.delete(`http://localhost:8000/book/${bookId}`)
         if (respone.error) {
             commit('errorHandling', respone.error)
         }

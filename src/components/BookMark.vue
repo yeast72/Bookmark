@@ -1,6 +1,9 @@
 <template>
-  <div class="hello">
+  <div class="app">
     <div v-bind:key="folder.id" v-for="folder in allFolders">
+      <BookFolder v-bind:folder="folder"/>
+      <BookFolder v-bind:folder="folder"/>
+      <BookFolder v-bind:folder="folder"/>
       <BookFolder v-bind:folder="folder"/>
     </div>
 
@@ -19,7 +22,6 @@ import BookFolder from "./BookFolder.vue";
 export default {
   name: "BookMark",
   components: { BookItem, BookFolder },
-  props: ["books"],
   computed: {
     ...mapGetters(["allBooks", "allFolders"])
   },
@@ -42,5 +44,8 @@ h3 {
   background: #f54646;
   border-radius: 30px;
   width: 20px;
+}
+.app {
+  display: block;
 }
 </style>

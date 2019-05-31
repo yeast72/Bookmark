@@ -1,7 +1,8 @@
 <template>
   <div>
     <form @submit="onSubmit">
-      <input v-model="title" type="text" name="name" placeholder="Add book...">
+      <input v-model="title" type="text" name="title" placeholder="Add bookmark title...">
+      <input v-model="url" type="text" name="url" placeholder="Add bookmark url...">
       <input type="submit" value="Submit" class="btn">
     </form>
   </div>
@@ -12,22 +13,27 @@ import { mapActions } from "vuex";
 
 export default {
   name: "AddBook",
+  props: ["folderId"],
   data() {
     return {
-      title: ""
+      title: "",
+      url: ""
     };
   },
   methods: {
-    ...mapActions(["addBook"]),
+    ...mapActions(["addBookmarkToFolder"]),
+
     onSubmit(e) {
       e.preventDefault();
       const newBook = {
+        _id: 3,
         title: this.title,
-        url: "medium",
+        url: this.url,
         completed: false
       };
-      this.addBook(newBook);
+      this.addBookmarkToFolder({ folderId: this.folderId, book: newBook });
       this.title = "";
+      this.url = "";
     }
   }
 };

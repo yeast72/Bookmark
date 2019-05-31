@@ -21,14 +21,14 @@ const actions = {
         const respone = await axios.get("http://localhost:8000/books")
         commit('setBooks', respone.data.books)
     },
-    async addBook({
-        commit
-    }, book) {
-        const respone = await axios.post("http://localhost:8000/book", {
-            book: book
-        })
-        commit('addBook', respone.data.book)
-    },
+    // async addBook({
+    //     commit
+    // }, book) {
+    //     const respone = await axios.post("http://localhost:8000/book", {
+    //         book: book
+    //     })
+    //     commit('addBook', respone.data.book)
+    // },
     async deleteBook({
         commit
     }, bookId) {

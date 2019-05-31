@@ -7,14 +7,14 @@
       </div>
     </div>
 
-    <div class="dropdown-list">
-      <div v-bind:key="bookmark.id" v-for="bookmark in folder.bookmarks">
-        <ul v-bind:style="{maxHeight:listsHeight}">
+    <div class="dropdown-list" v-bind:style="{maxHeight:calculetedListsHeight}">
+      <div v-bind:key="bookmark._id" v-for="bookmark in folder.bookmarks">
+        <ul>
           <BookItem v-bind:bookmark="bookmark"></BookItem>
         </ul>
       </div>
     </div>
-    <AddBook></AddBook>
+    <AddBook v-bind:folderId="folder._id"></AddBook>
   </div>
 </template>
 
@@ -28,16 +28,21 @@ export default {
   components: { BookItem, AddBook },
   data() {
     return {
-      boomarks: "",
       isActive: false,
       listsHeight: 0,
-      listHeight: 40
+      listHeight: 50
     };
+  },
+  computed: {
+    calculetedListsHeight() {
+      return this.isActive
+        ? this.listHeight * this.folder.bookmarks.length + "px"
+        : 0 + "px";
+    }
   },
   methods: {
     onClickHandle() {
       this.isActive = !this.isActive;
-      this.listsHeight = this.isActive ? 4 * this.listHeight + "px" : 0 + "px";
     }
   }
 };
@@ -76,11 +81,11 @@ h1 {
 .dropdown-list {
   display: flex;
   flex-direction: column;
+  max-height: 0;
+  overflow: hidden;
 }
 
 ul {
-  max-height: 0;
-  overflow: hidden;
   margin: 5px 10px;
   transition: max-height 0.2s ease-out;
 }

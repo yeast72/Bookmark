@@ -4,7 +4,7 @@
       <BookFolder v-bind:folder="folder"/>
     </div>
     <div>
-      <ContextMenu ref="menu" v-show="showMenu">
+      <ContextMenu ref="menu">
         <ContextMenuItem @click.native="$refs.menu.menuAction('ADD_BOOK')">Add Bookmark</ContextMenuItem>
         <ContextMenuItem @click.native="$refs.menu.menuAction('ADD_FOLDER')">Add Folder</ContextMenuItem>
       </ContextMenu>

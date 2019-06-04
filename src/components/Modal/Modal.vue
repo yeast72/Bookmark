@@ -1,14 +1,21 @@
 <template>
   <div class="modal" id="myModal" ref="modal" v-if="isVisible" @click="onModalClick($event)">
-    <div class="modal-content">
-      <slot @onClickCancalHandler="onModalClick"></slot>
+    <div class="modal-container">
+      <div class="modal-header">
+        <slot name="header">Default header</slot>
+      </div>
+      <div class="modal-body">
+        <slot name="body">Default body</slot>
+      </div>
+      <div class="modal-button">
+        <slot name="button"></slot>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Modal",
   data() {
     return {
       opened: false
@@ -20,16 +27,15 @@ export default {
     }
   },
   methods: {
-    open(event) {
+    openModal() {
       this.opened = true;
     },
     closeModal() {
-      console.log("Okay");
       this.opened = false;
     },
     onModalClick(event) {
       if (event.target == this.$refs.modal) {
-        this.opened = false;
+        this.closeModal;
       }
     }
   }
@@ -50,7 +56,7 @@ export default {
   background-color: rgb(0, 0, 0); /* Fallback color */
   background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
-.modal-content {
+.modal-container {
   background-color: #fefefe;
   margin: auto;
   padding: 20px;

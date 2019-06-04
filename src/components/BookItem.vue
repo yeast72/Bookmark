@@ -16,14 +16,14 @@
         id="edit-button"
         :icon="['far', 'edit']"
         size="xs"
-        @click="$refs.modal.open($event)"
+        @click="editBookmark($event, bookmark)"
       />
       <font-awesome-icon
         class="bookitem-button"
         id="trash-button"
         :icon="['far', 'trash-alt']"
         size="xs"
-        @click="$emit('deleteBookmarkInFolder', bookmark._id)"
+        @click="deleteBookmarkInFolder({ folderId: folderId, bookId: bookmark._id})"
       />
       <font-awesome-icon
         class="bookitem-button"
@@ -35,21 +35,29 @@
       />
     </div>
     <Modal ref="modal">
-      <EditModal v-bind:bookmark="bookmark"></EditModal>
+      <h1 slot="header">Edit bookmark</h1>
+      <div slot="body">
+        <p>Title</p>
+        <input type="text" v-model="bookmark.title" placeholder="Name">
+        <p>URL</p>
+        <input type="text" v-model="bookmark.url" placeholder="URL">
+      </div>
+      <template slot="button">
+        <button @click="doneEdit(bookmark)">Save</button>
+        <button @click="cancelEdit(bookmark)">Cancel</button>
+      </template>
     </Modal>
   </li>
 </template>
 
 <script>
-import Modal from "../components/Modal/Modal";
-import EditModal from "../components/Modal/EditModal";
-
+import { mapActions } from "vuex";
+import Modal from "./Modal/Modal";
 export default {
-  name: "BookItem",
-  props: ["bookmark"],
-  components: { Modal, EditModal },
+  props: ["bookmark", "folderId"],
+  components: { Modal },
   data() {
-    return { stared: false };
+    return { stared: false, editedBookmark: null };
   },
   computed: {
     isStared() {
@@ -57,16 +65,33 @@ export default {
     }
   },
   methods: {
-    onClickEditButton() {},
+    ...mapActions(["deleteBookmarkInFolder", "editBookmarkInFolder"]),
     markComplete() {
       this.bookmark.completed = !this.bookmark.completed;
     },
-    deleteBook(bookId) {
-      this.deleteBook(bookId);
-    },
     starBookmark() {
       this.stared = !this.stared;
-      console.log(this.stared);
+    },
+    editBookmark(evt, bookmark) {
+      this.$refs.modal.openModal(evt);
+      this.beforeEditCache = { ...bookmark };
+      this.editedBookmark = bookmark;
+    },
+    doneEdit(bookmark) {
+      if (!this.editedBookmark) {
+        return;
+      }
+      this.editBookmarkInFolder({
+        folderId: this.folderId,
+        updBookmark: bookmark
+      });
+      this.$refs.modal.closeModal();
+    },
+    cancelEdit(bookmark) {
+      this.editedBookmark = null;
+      bookmark.title = this.beforeEditCache.title;
+      bookmark.url = this.beforeEditCache.url;
+      this.$refs.modal.closeModal();
     }
   }
 };

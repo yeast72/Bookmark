@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown" @contextmenu.prevent="$refs.folderMenu.open($event)">
+  <div class="dropdown">
     <div class="dropdown-header" v-bind:class="{ active: isActive }" v-on:click="onClickHandle">
       <div class="dropdown-title">{{folder.name}}</div>
       <div class="dropdown-button">
@@ -10,15 +10,15 @@
     <div v-show="isActive" class="dropdown-list">
       <div v-bind:key="bookmark._id" v-for="bookmark in folder.bookmarks">
         <ul>
-          <BookItem v-bind:bookmark="bookmark" @deleteBookmarkInFolder="deleteBookmark"></BookItem>
+          <BookItem
+            v-bind:folderId="folder._id"
+            v-bind:bookmark="bookmark"
+            @deleteBookmarkInFolder="deleteBookmark"
+          />
         </ul>
       </div>
     </div>
-
-    <AddBook v-bind:folderId="folder._id"></AddBook>
-    <ContextMenu ref="folderMenu">
-      <ContextMenuItem>Add bookmarks</ContextMenuItem>
-    </ContextMenu>
+    <AddBook v-bind:folderId="folder._id"/>
   </div>
 </template>
 
@@ -26,13 +26,11 @@
 import { mapActions } from "vuex";
 import BookItem from "./BookItem";
 import AddBook from "./AddBook";
-import ContextMenu from "./ContextMenu/ContextMenu";
-import ContextMenuItem from "./ContextMenu/ContextMenuItem";
 
 export default {
   name: "BookFolder",
   props: ["folder"],
-  components: { BookItem, AddBook, ContextMenu, ContextMenuItem },
+  components: { BookItem, AddBook },
   data() {
     return {
       isActive: false,

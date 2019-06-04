@@ -10,7 +10,20 @@ const state = {
             _id: 1,
             title: 'Books 1',
             url: 'medium.com',
-            completed: false
+            completed: false,
+            star: false
+        }]
+    }, {
+        _id: 2,
+        name: 'Game folder',
+        createAt: '999999999',
+        updateAt: '999999999',
+        bookmarks: [{
+            _id: 1,
+            title: 'GTA 5',
+            url: 'medium.com',
+            completed: false,
+            star: false
         }]
     }]
 };
@@ -46,10 +59,22 @@ const actions = {
             bookId
         })
     },
+    async editBookmarkInFolder({
+        commit
+    }, {
+        folderId,
+        updBookmark
+    }) {
+        commit('editBookmarkInFolder', {
+            folderId,
+            updBookmark
+        })
+    }
 
 }
 
 const mutations = {
+
     setFolders: (state, folders) => (state.folders = folders),
 
     addBookmarkToFolder: (state, {
@@ -72,6 +97,18 @@ const mutations = {
                 return bookmark._id.toString() !== bookId.toString()
             })
         }
+    },
+    editBookmarkInFolder(state, {
+        folderId,
+        updBookmark
+    }) {
+        const folIndex = state.folders.findIndex(folder => folder._id.toString() === folderId.toString())
+        if (folIndex !== -1) {
+            const bookIndex = state.folders[folIndex].bookmarks.findIndex(bookmark => bookmark._id.toString() === updBookmark._id.toString())
+            state.folders[folIndex].bookmarks.splice(bookIndex, 1, updBookmark)
+        }
+
+
     }
 }
 

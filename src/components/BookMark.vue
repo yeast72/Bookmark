@@ -1,12 +1,14 @@
 <template>
-  <div class="app">
+  <div class="app" @contextmenu.prevent="$refs.menu.open($event)">
     <div v-bind:key="folder.id" v-for="folder in allFolders">
       <BookFolder v-bind:folder="folder"/>
-      <BookFolder v-bind:folder="folder"/>
-      <BookFolder v-bind:folder="folder"/>
-      <BookFolder v-bind:folder="folder"/>
     </div>
-
+    <div>
+      <ContextMenu ref="menu" v-show="showMenu">
+        <ContextMenuItem @click.native="$refs.menu.menuAction('ADD_BOOK')">Add Bookmark</ContextMenuItem>
+        <ContextMenuItem @click.native="$refs.menu.menuAction('ADD_FOLDER')">Add Folder</ContextMenuItem>
+      </ContextMenu>
+    </div>
     <!-- <div v-bind:key="book._id" v-for="book in allBooks">
       <BookItem v-bind:book="book"/>
       <button @click="deleteBook(book._id)" class="del">x</button>
@@ -16,12 +18,16 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import BookItem from "./BookItem.vue";
 import BookFolder from "./BookFolder.vue";
+import ContextMenu from "./ContextMenu/ContextMenu";
+import ContextMenuItem from "./ContextMenu/ContextMenuItem";
 
 export default {
   name: "BookMark",
-  components: { BookItem, BookFolder },
+  data() {
+    return {};
+  },
+  components: { BookFolder, ContextMenu, ContextMenuItem },
   computed: {
     ...mapGetters(["allBooks", "allFolders"])
   },
@@ -37,15 +43,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-.del {
-  background: #f54646;
-  border-radius: 30px;
-  width: 20px;
-}
 .app {
-  display: block;
+  background-color: rgb(175, 130, 47);
+  padding: 20px 10px;
 }
 </style>

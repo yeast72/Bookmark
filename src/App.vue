@@ -8,26 +8,29 @@
 <script>
 import BookMark from "./components/BookMark";
 import Header from "./components/layout/Header";
-import AddBook from "./components/AddBook";
 
 export default {
   name: "app",
   components: {
     BookMark,
-    Header,
-    AddBook
+    Header
   }
 };
 </script>
 
 <style>
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+#app {
+  display: block;
 }
 body {
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.4;
+  width: 100%;
+  height: 100%;
 }
 </style>

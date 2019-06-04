@@ -1,31 +1,38 @@
 <template>
-  <div class="dropdown">
+  <div class="dropdown" @contextmenu.prevent="$refs.folderMenu.open($event)">
     <div class="dropdown-header" v-bind:class="{ active: isActive }" v-on:click="onClickHandle">
       <div class="dropdown-title">{{folder.name}}</div>
       <div class="dropdown-button">
-        <font-awesome-icon icon="caret-down"/>
+        <font-awesome-icon icon="caret-down" :rotation="iconRotation"/>
       </div>
     </div>
 
-    <div class="dropdown-list" v-bind:style="{maxHeight:calculetedListsHeight}">
+    <div v-show="isActive" class="dropdown-list">
       <div v-bind:key="bookmark._id" v-for="bookmark in folder.bookmarks">
         <ul>
-          <BookItem v-bind:bookmark="bookmark"></BookItem>
+          <BookItem v-bind:bookmark="bookmark" @deleteBookmarkInFolder="deleteBookmark"></BookItem>
         </ul>
       </div>
     </div>
+
     <AddBook v-bind:folderId="folder._id"></AddBook>
+    <ContextMenu ref="folderMenu">
+      <ContextMenuItem>Add bookmarks</ContextMenuItem>
+    </ContextMenu>
   </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import BookItem from "./BookItem";
 import AddBook from "./AddBook";
+import ContextMenu from "./ContextMenu/ContextMenu";
+import ContextMenuItem from "./ContextMenu/ContextMenuItem";
 
 export default {
   name: "BookFolder",
   props: ["folder"],
-  components: { BookItem, AddBook },
+  components: { BookItem, AddBook, ContextMenu, ContextMenuItem },
   data() {
     return {
       isActive: false,
@@ -34,30 +41,38 @@ export default {
     };
   },
   computed: {
-    calculetedListsHeight() {
-      return this.isActive
-        ? this.listHeight * this.folder.bookmarks.length + "px"
-        : 0 + "px";
+    iconRotation() {
+      return this.isActive ? null : "270";
     }
+    // calculetedListsHeight() {
+    //   return this.isActive
+    //     ? this.listHeight * this.folder.bookmarks.length + "px"
+    //     : 0 + "px";
+    // }
   },
   methods: {
+    ...mapActions(["deleteBookmarkInFolder", "fetchFolders"]),
     onClickHandle() {
       this.isActive = !this.isActive;
+    },
+    deleteBookmark(bookId) {
+      this.deleteBookmarkInFolder({
+        folderId: this.folder._id,
+        bookId: bookId
+      });
     }
   }
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 h1 {
   color: aqua;
 }
 .dropdown {
   display: flex;
   flex-direction: column;
-  margin: 20px 10px;
   border: 1px whitesmoke solid;
-  width: 50ch;
   border-radius: 10px;
   background-color: wheat;
 }
@@ -81,8 +96,6 @@ h1 {
 .dropdown-list {
   display: flex;
   flex-direction: column;
-  max-height: 0;
-  overflow: hidden;
 }
 
 ul {

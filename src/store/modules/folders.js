@@ -31,15 +31,22 @@ const actions = {
     }, payload) {
         commit('addBookmarkToFolder', payload)
     },
-    async deleteBook({
+    async deleteBookmarkInFolder({
         commit
-    }, bookId) {
-        const respone = await axios.delete(`http://localhost:8000/book/${bookId}`)
-        if (respone.error) {
-            commit('errorHandling', respone.error)
-        }
-        commit('deleteBook', bookId)
-    }
+    }, {
+        folderId,
+        bookId
+    }) {
+        // const respone = await axios.delete(`http://localhost:8000/book/${bookId}`)
+        // if (respone.error) {
+        //     commit('errorHandling', respone.error)
+        // }
+        commit('deleteBookmarkInFolder', {
+            folderId,
+            bookId
+        })
+    },
+
 }
 
 const mutations = {
@@ -54,6 +61,18 @@ const mutations = {
             state.folders[index].bookmarks.push(book)
         }
     },
+
+    deleteBookmarkInFolder: (state, {
+        folderId,
+        bookId
+    }) => {
+        const index = state.folders.findIndex(folder => folder._id === folderId)
+        if (index !== -1) {
+            state.folders[index].bookmarks = state.folders[index].bookmarks.filter(bookmark => {
+                return bookmark._id.toString() !== bookId.toString()
+            })
+        }
+    }
 }
 
 export default {

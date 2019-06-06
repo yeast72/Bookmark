@@ -1,66 +1,110 @@
 <template>
-  <div class="modal" id="myModal" ref="modal" v-if="isVisible" @click="onModalClick($event)">
-    <div class="modal-container">
-      <div class="modal-header">
-        <slot name="header">Default header</slot>
-      </div>
-      <div class="modal-body">
-        <slot name="body">Default body</slot>
-      </div>
-      <div class="modal-button">
-        <slot name="button"></slot>
+  <transition name="modal">
+    <div class="modal-mask" v-if="isShow" @click="close">
+      <div class="modal-container" @click.stop>
+        <slot></slot>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      opened: false
-    };
-  },
+  props: ["show"],
   computed: {
-    isVisible() {
-      return this.opened;
+    isShow() {
+      return this.show;
     }
   },
   methods: {
-    openModal() {
-      this.opened = true;
-    },
-    closeModal() {
-      this.opened = false;
-    },
-    onModalClick(event) {
-      if (event.target == this.$refs.modal) {
-        this.closeModal;
-      }
+    close() {
+      console.log("close in modal");
+      this.$emit("close-modal");
     }
+  },
+  mounted() {
+    document.addEventListener("keydown", e => {
+      if (this.isShow && e.keyCode == 27) {
+        this.close();
+      }
+    });
   }
 };
 </script>
 
 <style scoped>
-.modal {
-  /* display: none; Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 100px; /* Location of the box */
-  left: 0;
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: opacity 0.3s ease;
 }
+
 .modal-container {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
+  width: 300px;
+  margin: 40px auto 0;
+  padding: 20px 30px;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  transition: all 0.3s ease;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.modal-header h3 {
+  margin-top: 0;
+  color: #42b983;
+}
+
+.modal-body {
+  margin: 20px 0;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 1em;
+}
+
+.form-label > .form-control {
+  margin-top: 0.5em;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0.5em 1em;
+  line-height: 1.5;
+  border: 1px solid #ddd;
+}
+
+/*
+ * The following styles are auto-applied to elements with
+ * transition="modal" when their visibility is toggled
+ * by Vue.js.
+ *
+ * You can easily play with the modal transition by editing
+ * these styles.
+ */
+
+.modal-enter {
+  opacity: 0;
+}
+
+.modal-leave-active {
+  opacity: 0;
+}
+
+.modal-enter .modal-container,
+.modal-leave-active .modal-container {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
 }
 </style>

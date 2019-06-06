@@ -16,7 +16,7 @@
         id="edit-button"
         :icon="['far', 'edit']"
         size="xs"
-        @click="editBookmark($event, bookmark)"
+        @click="editBookmark(bookmark)"
       />
       <font-awesome-icon
         class="bookitem-button"
@@ -34,30 +34,42 @@
         @click="starBookmark"
       />
     </div>
-    <Modal ref="modal">
-      <h1 slot="header">Edit bookmark</h1>
-      <div slot="body">
+    <!-- <Modal ref="modal">
+      <template slot="header">Edit bookmark</template>
+      <template slot="body">
         <p>Title</p>
         <input type="text" v-model="bookmark.title" placeholder="Name">
         <p>URL</p>
         <input type="text" v-model="bookmark.url" placeholder="URL">
-      </div>
+      </template>
       <template slot="button">
         <button @click="doneEdit(bookmark)">Save</button>
         <button @click="cancelEdit(bookmark)">Cancel</button>
       </template>
-    </Modal>
+    </Modal>-->
+    <EditBookmarkModal
+      @close-modal="cancelEdit(bookmark)"
+      @edit-bookmark="doneEdit($event)"
+      v-bind:show="showEditBookmarkModal"
+      v-bind:bookmark="bookmark"
+    ></EditBookmarkModal>
   </li>
 </template>
 
 <script>
 import { mapActions } from "vuex";
 import Modal from "./Modal/Modal";
+import EditBookmarkModal from "./Modal/EditBookmarkModal";
+
 export default {
   props: ["bookmark", "folderId"],
-  components: { Modal },
+  components: { Modal, EditBookmarkModal },
   data() {
-    return { stared: false, editedBookmark: null };
+    return {
+      showEditBookmarkModal: false,
+      stared: false,
+      editedBookmark: null
+    };
   },
   computed: {
     isStared() {
@@ -72,8 +84,8 @@ export default {
     starBookmark() {
       this.stared = !this.stared;
     },
-    editBookmark(evt, bookmark) {
-      this.$refs.modal.openModal(evt);
+    editBookmark(bookmark) {
+      this.showEditBookmarkModal = true;
       this.beforeEditCache = { ...bookmark };
       this.editedBookmark = bookmark;
     },
@@ -85,13 +97,13 @@ export default {
         folderId: this.folderId,
         updBookmark: bookmark
       });
-      this.$refs.modal.closeModal();
+      this.showEditBookmarkModal = false;
     },
     cancelEdit(bookmark) {
       this.editedBookmark = null;
       bookmark.title = this.beforeEditCache.title;
       bookmark.url = this.beforeEditCache.url;
-      this.$refs.modal.closeModal();
+      this.showEditBookmarkModal = false;
     }
   }
 };

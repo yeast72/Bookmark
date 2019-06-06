@@ -1,6 +1,7 @@
 <template>
   <div class="dropdown">
     <div class="dropdown-header" v-bind:class="{ active: isActive }" v-on:click="onClickHandle">
+      <font-awesome-icon :icon="['fas','folder']" class="font-awesome"/>
       <div class="dropdown-title">{{folder.name}}</div>
       <div class="dropdown-button">
         <font-awesome-icon icon="caret-down" :rotation="iconRotation"/>
@@ -64,6 +65,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.font-awesome {
+  background-clip: padding-box;
+  background-origin: padding-box;
+  border-radius: 3px;
+  // padding: 5px;
+  opacity: 0.7;
+  // font-size: 20px;
+}
 h1 {
   color: aqua;
 }

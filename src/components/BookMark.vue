@@ -1,5 +1,7 @@
 <template>
   <div class="app" @contextmenu.prevent="$refs.menu.open($event)">
+    <button @click="openAddBookmarkModal">Add bookmark</button>
+    <button @click="openAddFolderModal">Add Folder</button>
     <div v-bind:key="folder.id" v-for="folder in allFolders">
       <BookFolder v-bind:folder="folder"/>
     </div>
@@ -9,10 +11,12 @@
         <ContextMenuItem @click.native="$refs.menu.menuAction('ADD_FOLDER')">Add Folder</ContextMenuItem>
       </ContextMenu>
     </div>
-    <!-- <div v-bind:key="book._id" v-for="book in allBooks">
-      <BookItem v-bind:book="book"/>
-      <button @click="deleteBook(book._id)" class="del">x</button>
-    </div>-->
+    <NewBookmarkModal :show="showNewBookmarkModal" @close-modal="showNewBookmarkModal = false"></NewBookmarkModal>
+    <NewFolderModal
+      :show="showNewFolderModal"
+      @add-folder="addFolder($event)"
+      @close-modal="showNewFolderModal = false"
+    ></NewFolderModal>
   </div>
 </template>
 
@@ -21,18 +25,35 @@ import { mapGetters, mapActions } from "vuex";
 import BookFolder from "./BookFolder.vue";
 import ContextMenu from "./ContextMenu/ContextMenu";
 import ContextMenuItem from "./ContextMenu/ContextMenuItem";
+import NewBookmarkModal from "./Modal/NewBookmarkModal";
+import NewFolderModal from "./Modal/NewFolderModal";
 
 export default {
   name: "BookMark",
   data() {
-    return {};
+    return {
+      showNewBookmarkModal: false,
+      showNewFolderModal: false
+    };
   },
-  components: { BookFolder, ContextMenu, ContextMenuItem },
+  components: {
+    BookFolder,
+    ContextMenu,
+    ContextMenuItem,
+    NewBookmarkModal,
+    NewFolderModal
+  },
   computed: {
     ...mapGetters(["allBooks", "allFolders"])
   },
   methods: {
-    ...mapActions(["fetchBooks", "deleteBook", "fetchFolders"])
+    ...mapActions(["fetchBooks", "deleteBook", "fetchFolders", "addFolder"]),
+    openAddFolderModal() {
+      this.showNewFolderModal = true;
+    },
+    openAddBookmarkModal() {
+      this.showNewBookmarkModal = true;
+    }
   },
   created() {
     this.fetchBooks();

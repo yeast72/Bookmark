@@ -39,6 +39,11 @@ const actions = {
         const respone = await axios.get("http://localhost:8000")
         commit('setFolders', respone.data.folders)
     },
+    async addFolder({
+        commit
+    }, folder) {
+        commit('addFolder', folder)
+    },
     async addBookmarkToFolder({
         commit
     }, payload) {
@@ -76,7 +81,7 @@ const actions = {
 const mutations = {
 
     setFolders: (state, folders) => (state.folders = folders),
-
+    addFolder: (state, folder) => (state.folders.push(folder)),
     addBookmarkToFolder: (state, {
         folderId,
         book

@@ -1,7 +1,9 @@
 <template>
   <div class="app" @contextmenu.prevent="$refs.menu.open($event)">
-    <button @click="openAddBookmarkModal">Add bookmark</button>
-    <button @click="openAddFolderModal">Add Folder</button>
+    <!-- <button @click="openAddBookmarkModal">Add bookmark</button>
+    <button @click="openAddFolderModal">Add Folder</button>-->
+    <Folders @show-bookmark="showBookmark" :folders="allFolders" class="folder-container"></Folders>
+    <BookmarkList class="bookmarklist-container" :bookmarks="currentBookmarks"></BookmarkList>
     <div v-bind:key="folder.id" v-for="folder in allFolders">
       <BookFolder v-bind:folder="folder"/>
     </div>
@@ -27,24 +29,29 @@ import ContextMenu from "./ContextMenu/ContextMenu";
 import ContextMenuItem from "./ContextMenu/ContextMenuItem";
 import NewBookmarkModal from "./Modal/NewBookmarkModal";
 import NewFolderModal from "./Modal/NewFolderModal";
+import Folders from "./Folders";
+import BookmarkList from "./BookmarkList";
 
 export default {
   name: "BookMark",
   data() {
     return {
       showNewBookmarkModal: false,
-      showNewFolderModal: false
+      showNewFolderModal: false,
+      currentBookmarks: []
     };
   },
   components: {
+    Folders,
     BookFolder,
     ContextMenu,
     ContextMenuItem,
     NewBookmarkModal,
-    NewFolderModal
+    NewFolderModal,
+    BookmarkList
   },
   computed: {
-    ...mapGetters(["allBooks", "allFolders"])
+    ...mapGetters(["allBooks", "allFolders", "getBookmarksFromFolderId"])
   },
   methods: {
     ...mapActions(["fetchBooks", "deleteBook", "fetchFolders", "addFolder"]),
@@ -53,6 +60,10 @@ export default {
     },
     openAddBookmarkModal() {
       this.showNewBookmarkModal = true;
+    },
+    showBookmark(selectedFolderId) {
+      console.log("show-bookmark");
+      this.currentBookmarks = this.getBookmarksFromFolderId(selectedFolderId);
     }
   },
   created() {
@@ -65,7 +76,19 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .app {
+  display: flex;
+  flex-direction: row;
   background-color: rgb(175, 130, 47);
   padding: 20px 10px;
+}
+.folder-container {
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+}
+.bookmarklist-container {
+  display: flex;
+  flex-direction: column;
+  flex: 3;
 }
 </style>

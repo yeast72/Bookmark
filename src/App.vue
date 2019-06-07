@@ -1,18 +1,18 @@
 <template>
   <div id="app">
     <Header/>
-    <BookMark/>
+    <Bookmarks class="bookmarks-container"/>
   </div>
 </template>
 
 <script>
-import BookMark from "./components/BookMark";
+import Bookmarks from "./components/Bookmarks";
 import Header from "./components/layout/Header";
 
 export default {
   name: "app",
   components: {
-    BookMark,
+    Bookmarks,
     Header
   }
 };
@@ -22,6 +22,9 @@ export default {
 * {
   margin: 0;
   padding: 0;
+}
+.bookmarks-container {
+  height: 100%;
 }
 
 #app {

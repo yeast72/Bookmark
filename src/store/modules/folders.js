@@ -1,35 +1,29 @@
 import axios from 'axios'
+import folders from '../../data/folders'
+
+const findFolderById = (folders, folderId) => {
+    let result = ""
+    folders.forEach(folder => {
+        if (folder._id === folderId) {
+            result = folder
+            return folder
+        } else if (folder.children && folder.children.length && typeof folder.children === "object") {
+            result = findFolderById(folder.children, folderId)
+        }
+    })
+    return result
+}
+
 
 const state = {
-    folders: [{
-        _id: 1,
-        name: 'Web dev folder',
-        createAt: '12312312',
-        updateAt: '123123123',
-        bookmarks: [{
-            _id: 1,
-            title: 'Books 1',
-            url: 'medium.com',
-            completed: false,
-            star: false
-        }]
-    }, {
-        _id: 2,
-        name: 'Game folder',
-        createAt: '999999999',
-        updateAt: '999999999',
-        bookmarks: [{
-            _id: 1,
-            title: 'GTA 5',
-            url: 'medium.com',
-            completed: false,
-            star: false
-        }]
-    }]
+    folders
 };
 
 const getters = {
-    allFolders: (state) => state.folders
+    allFolders: (state) => state.folders,
+    getBookmarksFromFolderId: (state) => (folderId) => {
+        return findFolderById(state.folders, folderId).bookmarks
+    }
 }
 
 const actions = {

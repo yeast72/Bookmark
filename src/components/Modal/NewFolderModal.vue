@@ -12,7 +12,10 @@
     </div>
 
     <div class="modal-footer text-right">
-      <button class="modal-default-button" @click="save({name: name})">Save</button>
+      <button
+        class="modal-default-button"
+        @click="save({name: name, bookmarks: [], _id: '321321312312', childFolderId: []})"
+      >Save</button>
       <button class="modal-default-button" @click="close">Cancel</button>
     </div>
   </Modal>

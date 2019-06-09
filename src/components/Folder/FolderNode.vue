@@ -9,21 +9,23 @@
       >[{{ isOpen ? '-' : '+' }}]</span>
     </div>
     <ul v-show="isOpen" v-if="isFolder">
-      <FolderTree
+      <FolderNode
         class="folder"
         @selected-folder="$emit('selected-folder',$event)"
-        v-for="(child, index) in folder.children"
+        v-for="(id, index) in folder.childFolderId"
         :key="index"
-        :folder="child"
-      ></FolderTree>
+        :folder="getFolderById(id)"
+      ></FolderNode>
       <!-- <li class="add" @click="$emit('add-item', folder)">+</li> -->
     </ul>
   </li>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
-  name: "FolderTree",
+  name: "FolderNode",
   props: {
     folder: Object
   },
@@ -33,8 +35,9 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["getFolderById"]),
     isFolder() {
-      return this.folder.children && this.folder.children.length;
+      return this.folder.childFolderId && this.folder.childFolderId.length;
     }
   },
   methods: {

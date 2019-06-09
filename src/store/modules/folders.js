@@ -1,18 +1,7 @@
 import axios from 'axios'
 import folders from '../../data/folders'
+import Vue from 'vue'
 
-const findFolderById = (folders, folderId) => {
-    let result = ""
-    folders.forEach(folder => {
-        if (folder._id === folderId) {
-            result = folder
-            return folder
-        } else if (folder.children && folder.children.length && typeof folder.children === "object") {
-            result = findFolderById(folder.children, folderId)
-        }
-    })
-    return result
-}
 
 
 const state = {
@@ -20,10 +9,9 @@ const state = {
 };
 
 const getters = {
-    allFolders: (state) => state.folders,
-    getBookmarksFromFolderId: (state) => (folderId) => {
-        return findFolderById(state.folders, folderId).bookmarks
-    }
+    getRootFolder: (state) => state.folders[0],
+    getFolderById: (state) => (folderId) => (state.folders[folderId]),
+    getAllFolders: (state) => state.folders,
 }
 
 const actions = {
@@ -33,10 +21,22 @@ const actions = {
         const respone = await axios.get("http://localhost:8000")
         commit('setFolders', respone.data.folders)
     },
-    async addFolder({
+    async createFolder({
         commit
     }, folder) {
-        commit('addFolder', folder)
+        commit('createFolder', folder)
+    },
+    async addFolder({
+        commit
+    }, {
+        folderId,
+        parentId
+    }) {
+        console.log(folderId + ", " + parentId)
+        commit('addFolder', {
+            folderId,
+            parentId
+        })
     },
     async addBookmarkToFolder({
         commit
@@ -75,7 +75,17 @@ const actions = {
 const mutations = {
 
     setFolders: (state, folders) => (state.folders = folders),
-    addFolder: (state, folder) => (state.folders.push(folder)),
+    createFolder: (state, newFolder) => {
+        const index = newFolder._id
+        Vue.set(state.folders, index, newFolder)
+    },
+    addFolder: (state, {
+        folderId,
+        parentId
+    }) => {
+        console.log(folderId + ", " + parentId)
+        state.folders[parentId].childFolderId.push(folderId)
+    },
     addBookmarkToFolder: (state, {
         folderId,
         book

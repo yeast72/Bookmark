@@ -2,31 +2,19 @@ export default {
     0: {
         _id: 0,
         name: 'folder1',
-        bookmarks: [],
+        bookmarksId: [0],
         childFolderId: [1, 2]
     },
     1: {
         _id: 1,
         name: 'folder2',
-        bookmarks: [{
-            _id: 1,
-            title: 'Books 1',
-            url: 'medium.com',
-            completed: false,
-            star: false
-        }],
+        bookmarksId: [0, 1],
         childFolderId: []
     },
     2: {
         _id: 2,
         name: 'folder3',
-        bookmarks: [{
-            _id: 10,
-            title: 'Books 10',
-            url: 'medium.com',
-            completed: false,
-            star: false
-        }],
+        bookmarksId: [1, 2],
         childFolderId: []
     }
 }

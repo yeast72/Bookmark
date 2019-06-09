@@ -1,5 +1,5 @@
 <template>
-  <div class="app" @contextmenu.prevent="$refs.menu.open($event)">
+  <div class="app">
     <FolderTree @show-bookmark="showBookmark" :rootFolder="getRootFolder" class="folder-container"></FolderTree>
     <div class="bookmarklist-container">
       <h1>BookmarkList</h1>
@@ -8,19 +8,13 @@
         <button @click="openAddFolderModal">Add Folder</button>
       </div>
 
-      <BookmarkList :bookmarks="currentFolder.bookmarks"></BookmarkList>
+      <BookmarkList :bookmarks="currentFolder.bookmarksId"></BookmarkList>
     </div>
-
-    <!-- <div v-bind:key="folder.id" v-for="folder in allFolders">
-      <BookFolder v-bind:folder="folder"/>
-    </div>-->
-    <div>
-      <ContextMenu ref="menu">
-        <ContextMenuItem @click.native="$refs.menu.menuAction('ADD_BOOK')">Add Bookmark</ContextMenuItem>
-        <ContextMenuItem @click.native="$refs.menu.menuAction('ADD_FOLDER')">Add Folder</ContextMenuItem>
-      </ContextMenu>
-    </div>
-    <NewBookmarkModal :show="showNewBookmarkModal" @close-modal="showNewBookmarkModal = false"></NewBookmarkModal>
+    <NewBookmarkModal
+      :show="showNewBookmarkModal"
+      @add-bookmark="addBookmark($event, currentFolder._id)"
+      @close-modal="showNewBookmarkModal = false"
+    ></NewBookmarkModal>
     <NewFolderModal
       :show="showNewFolderModal"
       @add-folder="addNewFolder($event, currentFolder._id)"
@@ -31,8 +25,6 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import ContextMenu from "./ContextMenu/ContextMenu";
-import ContextMenuItem from "./ContextMenu/ContextMenuItem";
 import NewBookmarkModal from "./Modal/NewBookmarkModal";
 import NewFolderModal from "./Modal/NewFolderModal";
 import FolderTree from "./Folder/FolderTree";
@@ -49,14 +41,17 @@ export default {
   },
   components: {
     FolderTree,
-    ContextMenu,
-    ContextMenuItem,
     NewBookmarkModal,
     NewFolderModal,
     BookmarkList
   },
   computed: {
-    ...mapGetters(["getFolderById", "getRootFolder", "getAllFolders"]),
+    ...mapGetters([
+      "getFolderById",
+      "getRootFolder",
+      "getAllFolders",
+      "getBookmarksLength"
+    ]),
     currentFolder() {
       return this.selectedFolderId === ""
         ? this.getRootFolder
@@ -69,7 +64,9 @@ export default {
       "deleteBook",
       "fetchFolders",
       "addFolder",
-      "createFolder"
+      "createFolder",
+      "createBookmark",
+      "addBookmarkToFolder"
     ]),
     openAddFolderModal() {
       this.showNewFolderModal = true;
@@ -88,8 +85,18 @@ export default {
       };
 
       this.createFolder(folder);
-      console.log("folderId from bookmarks components: " + folderId);
       this.addFolder({ folderId: newFolderId, parentId: folderId });
+    },
+    addBookmark(newBookmark, folderId) {
+      const bookmark = {
+        ...newBookmark,
+        _id: this.getBookmarksLength
+      };
+      this.createBookmark({ bookmark: bookmark });
+      this.addBookmarkToFolder({
+        bookmarkId: bookmark._id,
+        folderId: folderId
+      });
     }
   },
   created() {

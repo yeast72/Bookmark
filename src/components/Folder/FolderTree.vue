@@ -1,12 +1,14 @@
 <template>
   <div>
     <h1>Folders</h1>
-    <FolderNode
-      class="folder"
-      :key="rootFolder._id"
-      @selected-folder="showBookmark($event)"
-      :folder="rootFolder"
-    ></FolderNode>
+    <ul>
+      <FolderNode
+        class="folder"
+        :key="rootFolder._id"
+        @selected-folder="showBookmark($event)"
+        :folder="rootFolder"
+      ></FolderNode>
+    </ul>
     <!-- <div :key="folder._id" v-for="folder in rootFolder.childFolderId"></div> -->
   </div>
 </template>

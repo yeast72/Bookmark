@@ -2,8 +2,6 @@ import axios from 'axios'
 import folders from '../../data/folders'
 import Vue from 'vue'
 
-
-
 const state = {
     folders
 };
@@ -32,7 +30,6 @@ const actions = {
         folderId,
         parentId
     }) {
-        console.log(folderId + ", " + parentId)
         commit('addFolder', {
             folderId,
             parentId
@@ -40,8 +37,14 @@ const actions = {
     },
     async addBookmarkToFolder({
         commit
-    }, payload) {
-        commit('addBookmarkToFolder', payload)
+    }, {
+        bookmarkId,
+        folderId
+    }) {
+        commit('addBookmarkToFolder', {
+            bookmarkId,
+            folderId
+        })
     },
     async deleteBookmarkInFolder({
         commit
@@ -83,19 +86,14 @@ const mutations = {
         folderId,
         parentId
     }) => {
-        console.log(folderId + ", " + parentId)
         state.folders[parentId].childFolderId.push(folderId)
     },
     addBookmarkToFolder: (state, {
-        folderId,
-        book
+        bookmarkId,
+        folderId
     }) => {
-        const index = state.folders.findIndex(folder => folder._id === folderId)
-        if (index !== -1) {
-            state.folders[index].bookmarks.push(book)
-        }
+        state.folders[folderId].bookmarksId.push(bookmarkId)
     },
-
     deleteBookmarkInFolder: (state, {
         folderId,
         bookId

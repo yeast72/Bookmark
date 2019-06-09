@@ -7,11 +7,11 @@
     <div class="modal-body">
       <label class="form-label">
         Title
-        <input type="text" placeholder="New bookmark title...">
+        <input type="text" v-model="title" placeholder="New bookmark title...">
       </label>
       <label class="form-label">
         URL
-        <input type="text" placeholder="New bookmark URL">
+        <input type="text" v-model="url" placeholder="New bookmark URL">
       </label>
     </div>
 
@@ -39,7 +39,15 @@ export default {
       this.title = "";
       this.url = "";
     },
-    save() {}
+    save() {
+      let newBookmark = {
+        title: this.title,
+        url: this.url,
+        completed: false
+      };
+      this.$emit("add-bookmark", newBookmark);
+      this.close();
+    }
   }
 };
 </script>

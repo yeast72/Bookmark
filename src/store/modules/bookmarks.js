@@ -1,17 +1,15 @@
 import axios from 'axios'
+import Vue from 'vue'
+import bookmarks from '../../data/bookmarks'
 
 const state = {
-    books: [{
-        _id: 1,
-        title: 'Books 1',
-        url: 'medium.com',
-        completed: false
-    }],
-    error: ''
+    bookmarks
 };
 
 const getters = {
-    allBooks: (state) => state.books
+    getAllBookmarks: (state) => state.bookmarks,
+    getBookmarksLength: (state) => Object.keys(state.bookmarks).length,
+    getBookmarkById: (state) => (bookmarkId) => state.bookmarks[bookmarkId]
 };
 
 const actions = {
@@ -21,14 +19,13 @@ const actions = {
         const respone = await axios.get("http://localhost:8000/books")
         commit('setBooks', respone.data.books)
     },
-    // async addBook({
-    //     commit
-    // }, book) {
-    //     const respone = await axios.post("http://localhost:8000/book", {
-    //         book: book
-    //     })
-    //     commit('addBook', respone.data.book)
-    // },
+    async createBookmark({
+        commit
+    }, {
+        bookmark
+    }) {
+        commit('createBookmark', bookmark)
+    },
     async deleteBook({
         commit
     }, bookId) {
@@ -41,8 +38,9 @@ const actions = {
 };
 
 const mutations = {
-    setBooks: (state, books) => (state.books = books),
-    addBook: (state, book) => state.books.unshift(book),
+    createBookmark: (state, bookmark) => {
+        Vue.set(state.bookmarks, bookmark._id, bookmark)
+    },
     deleteBook: (state, bookId) => state.books = state.books.filter(book => {
         return book._id.toString() !== bookId.toString()
     }),

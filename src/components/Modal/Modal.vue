@@ -18,7 +18,6 @@ export default {
   },
   methods: {
     close() {
-      console.log("close in modal");
       this.$emit("close-modal");
     }
   },

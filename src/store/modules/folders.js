@@ -71,6 +71,17 @@ const actions = {
             folderId,
             updBookmark
         })
+    },
+    async removeBookmarkChild({
+        commit
+    }, {
+        folderId,
+        bookmarkId
+    }) {
+        commit('removeBookmarkChild', {
+            folderId,
+            bookmarkId
+        })
     }
 
 }
@@ -81,6 +92,16 @@ const mutations = {
     createFolder: (state, newFolder) => {
         const index = newFolder._id
         Vue.set(state.folders, index, newFolder)
+    },
+    removeBookmarkChild: (state, {
+        folderId,
+        bookmarkId
+    }) => {
+        const newBookmarksId = state.folders[folderId].bookmarksId.filter(id => id.toString() !== bookmarkId.toString())
+        state.folders[folderId] = {
+            ...state.folders[folderId],
+            bookmarksId: newBookmarksId
+        }
     },
     addFolder: (state, {
         folderId,

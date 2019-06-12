@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <Header/>
+  <div id="app" class="app-container">
+    <Header class="header-container"/>
     <Bookmarks class="bookmarks-container"/>
   </div>
 </template>
@@ -23,17 +23,32 @@ export default {
   margin: 0;
   padding: 0;
 }
-.bookmarks-container {
-  height: 100%;
+
+.header-container {
+  display: flex;
+  position: relative;
 }
 
-#app {
-  display: block;
+.bookmarks-container {
+  display: flex;
+  height: 100%;
+  position: relative;
 }
+
+.app-container {
+  height: 100%;
+  display: flex;
+  display: -webkit-flex;
+  flex-direction: column;
+  -webkit-flex-direction: column;
+  -webkit-align-content: stretch;
+  align-content: stretch;
+}
+html,
 body {
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.4;
-  width: 100%;
   height: 100%;
+  margin: 0;
 }
 </style>

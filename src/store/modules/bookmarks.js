@@ -26,24 +26,45 @@ const actions = {
     }) {
         commit('createBookmark', bookmark)
     },
-    async deleteBook({
+    async deleteBookmark({
         commit
     }, bookId) {
-        const respone = await axios.delete(`http://localhost:8000/book/${bookId}`)
-        if (respone.error) {
-            commit('errorHandling', respone.error)
-        }
-        commit('deleteBook', bookId)
+        // const respone = await axios.delete(`http://localhost:8000/book/${bookId}`)
+        // if (respone.error) {
+        //     commit('errorHandling', respone.error)
+        // }
+        commit('deleteBookmark', bookId)
+    },
+    async editBookmark({
+        commit
+    }, {
+        bookmarkId,
+        bookmark
+    }) {
+        commit('editBookmark', {
+            bookmarkId,
+            bookmark
+        })
     }
 };
 
 const mutations = {
+    editBookmark: (state, {
+        bookmarkId,
+        bookmark
+    }) => {
+        state.bookmarks = {
+            ...state.bookmarks,
+            [bookmarkId]: bookmark
+        }
+    },
     createBookmark: (state, bookmark) => {
         Vue.set(state.bookmarks, bookmark._id, bookmark)
     },
-    deleteBook: (state, bookId) => state.books = state.books.filter(book => {
-        return book._id.toString() !== bookId.toString()
-    }),
+    deleteBookmark: (state, bookId) => {
+        state.bookmarks[bookId] = undefined
+        state.bookmarks = JSON.parse(JSON.stringify(state.bookmarks));
+    },
     errorHandling: (state, error) => state.error = error
 };
 

@@ -2,13 +2,15 @@
   <div class="app">
     <FolderTree @show-bookmark="showBookmark" :rootFolder="getRootFolder" class="folder-container"></FolderTree>
     <div class="bookmarklist-container">
-      <h1>BookmarkList</h1>
       <div class="button-container">
+        <h1>{{ currentFolder.name }}</h1>
         <button @click="openAddBookmarkModal">Add bookmark</button>
         <button @click="openAddFolderModal">Add Folder</button>
       </div>
-
-      <BookmarkList :bookmarks="currentFolder.bookmarksId"></BookmarkList>
+      <BookmarkList
+        :bookmarks="currentFolder.bookmarksId"
+        @remove-bookmark-child="removeBookmarkChild({folderId: currentFolder._id, bookmarkId: $event})"
+      ></BookmarkList>
     </div>
     <NewBookmarkModal
       :show="showNewBookmarkModal"
@@ -66,7 +68,8 @@ export default {
       "addFolder",
       "createFolder",
       "createBookmark",
-      "addBookmarkToFolder"
+      "addBookmarkToFolder",
+      "removeBookmarkChild"
     ]),
     openAddFolderModal() {
       this.showNewFolderModal = true;

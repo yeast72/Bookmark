@@ -1,8 +1,16 @@
 <template>
-  <div>
-    <div :key="index" v-for="(bookmarkId, index) in bookmarks">
-      <BookmarkItem :bookmark="getBookmarkById(bookmarkId)"></BookmarkItem>
-    </div>
+  <div v-if="haveBookmark" class="bookmarklist-box">
+    <ul>
+      <BookmarkItem
+        :key="index"
+        v-for="(bookmarkId, index) in bookmarks"
+        :bookmark="getBookmarkById(bookmarkId)"
+        @remove-bookmark-child="$emit('remove-bookmark-child', $event)"
+      ></BookmarkItem>
+    </ul>
+  </div>
+  <div v-else>
+    <p>please, add bookmark first</p>
   </div>
 </template>
 
@@ -16,11 +24,22 @@ export default {
   },
   components: { BookmarkItem },
   computed: {
-    ...mapGetters(["getBookmarkById"])
+    ...mapGetters(["getBookmarkById"]),
+    haveBookmark() {
+      return this.bookmarks.length;
+    }
   },
   methods: {}
 };
 </script>
 
 <style scoped>
+.bookmarklist-box {
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.6);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.6);
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.6);
+}
+li {
+  list-style-type: none;
+}
 </style>

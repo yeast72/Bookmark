@@ -1,23 +1,24 @@
-import axios from 'axios'
 import folders from '../../data/folders'
 import Vue from 'vue'
+import {
+    getFolders
+} from '../../../api/api';
 
 const state = {
     folders
 };
 
 const getters = {
-    getRootFolder: (state) => state.folders[0],
     getFolderById: (state) => (folderId) => (state.folders[folderId]),
     getAllFolders: (state) => state.folders,
 }
 
 const actions = {
-    async fetchFolders({
+    fetchFolders: async ({
         commit
-    }) {
-        const respone = await axios.get("http://localhost:8000")
-        commit('setFolders', respone.data.folders)
+    }) => {
+        const respone = await getFolders()
+        commit('setFolders', respone)
     },
     async createFolder({
         commit

@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <FolderTree @show-bookmark="showBookmark" :rootFolder="getRootFolder" class="folder-container"></FolderTree>
+    <FolderTree @show-bookmark="showBookmark" :rootFolder="currentFolder" class="folder-container"></FolderTree>
     <div class="bookmarklist-container">
       <div class="button-container">
         <h1>{{ currentFolder.name }}</h1>
@@ -50,19 +50,29 @@ export default {
   computed: {
     ...mapGetters([
       "getFolderById",
-      "getRootFolder",
+      "getRootFolderId",
       "getAllFolders",
       "getBookmarksLength"
     ]),
     currentFolder() {
       return this.selectedFolderId === ""
-        ? this.getRootFolder
+        ? this.rootFolder
         : this.selectedFolderId;
+    },
+    rootFolder() {
+      return this.getFolderById(this.getRootFolderId);
     }
   },
+  created() {
+    this.fetchUser("yeast");
+    this.fetchBookmarks();
+    this.fetchFolders();
+  },
+  mounted() {},
   methods: {
     ...mapActions([
-      "fetchBooks",
+      "fetchBookmarks",
+      "fetchUser",
       "deleteBook",
       "fetchFolders",
       "addFolder",
@@ -101,10 +111,6 @@ export default {
         folderId: folderId
       });
     }
-  },
-  created() {
-    this.fetchBooks();
-    this.fetchFolders();
   }
 };
 </script>

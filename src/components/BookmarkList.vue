@@ -6,7 +6,7 @@
         v-for="(bookmarkId, index) in bookmarks"
         :bookmark="getBookmarkById(bookmarkId)"
         @remove-bookmark-child="$emit('remove-bookmark-child', $event)"
-      ></BookmarkItem>
+      />
     </ul>
   </div>
   <div v-else>

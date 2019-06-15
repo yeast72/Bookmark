@@ -1,6 +1,8 @@
-import axios from 'axios'
 import Vue from 'vue'
 import bookmarks from '../../data/bookmarks'
+import {
+    getBookmarks
+} from '../../../api/api';
 
 const state = {
     bookmarks
@@ -13,11 +15,11 @@ const getters = {
 };
 
 const actions = {
-    async fetchBooks({
+    async fetchBookmarks({
         commit
     }) {
-        const respone = await axios.get("http://localhost:8000/books")
-        commit('setBooks', respone.data.books)
+        const bookmarks = await getBookmarks()
+        commit('setBookmarks', bookmarks)
     },
     async createBookmark({
         commit
@@ -49,6 +51,7 @@ const actions = {
 };
 
 const mutations = {
+    setBookmarks: (state, bookmarks) => (state.bookmarks = bookmarks),
     editBookmark: (state, {
         bookmarkId,
         bookmark

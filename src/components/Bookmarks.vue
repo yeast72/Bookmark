@@ -1,6 +1,6 @@
 <template>
-  <div class="app">
-    <FolderTree @show-bookmark="showBookmark" :rootFolder="currentFolder" class="folder-container"></FolderTree>
+  <div class="app" v-if="rootFolder">
+    <FolderTree @show-bookmark="showBookmark" :rootFolder="rootFolder" class="folder-container"></FolderTree>
     <div class="bookmarklist-container">
       <div class="button-container">
         <h1>{{ currentFolder.name }}</h1>
@@ -23,6 +23,9 @@
       @close-modal="showNewFolderModal = false"
     ></NewFolderModal>
   </div>
+  <div class="app" v-else>
+    <h1>Loading....</h1>
+  </div>
 </template>
 
 <script>
@@ -30,7 +33,7 @@ import { mapGetters, mapActions } from "vuex";
 import NewBookmarkModal from "./Modal/NewBookmarkModal";
 import NewFolderModal from "./Modal/NewFolderModal";
 import FolderTree from "./Folder/FolderTree";
-import BookmarkList from "./BookmarkList";
+import BookmarkList from "./Bookmark/BookmarkList";
 
 export default {
   name: "BookMark",
@@ -57,18 +60,17 @@ export default {
     currentFolder() {
       return this.selectedFolderId === ""
         ? this.rootFolder
-        : this.selectedFolderId;
+        : this.getFolderById(this.selectedFolderId);
     },
     rootFolder() {
       return this.getFolderById(this.getRootFolderId);
     }
   },
   created() {
-    this.fetchUser("yeast");
     this.fetchBookmarks();
     this.fetchFolders();
+    this.fetchUser("yeast");
   },
-  mounted() {},
   methods: {
     ...mapActions([
       "fetchBookmarks",
@@ -76,40 +78,47 @@ export default {
       "deleteBook",
       "fetchFolders",
       "addFolder",
-      "createFolder",
-      "createBookmark",
       "addBookmarkToFolder",
-      "removeBookmarkChild"
+      "removeBookmarkChild",
+      "updateFolder"
     ]),
     openAddFolderModal() {
       this.showNewFolderModal = true;
     },
+
     openAddBookmarkModal() {
       this.showNewBookmarkModal = true;
     },
-    showBookmark(selectedFolderId) {
-      this.selectedFolderId = this.getFolderById(selectedFolderId);
-    },
-    addNewFolder(newFolder, folderId) {
-      let newFolderId = Object.keys(this.getAllFolders).length;
-      const folder = {
-        ...newFolder,
-        _id: newFolderId
-      };
 
-      this.createFolder(folder);
-      this.addFolder({ folderId: newFolderId, parentId: folderId });
+    showBookmark(selectedFolderId) {
+      this.selectedFolderId = selectedFolderId;
     },
-    addBookmark(newBookmark, folderId) {
+
+    async addNewFolder(newFolder, folderId) {
+      // let newFolderId = Object.keys(this.getAllFolders).length;
+      // const folder = {
+      //   ...newFolder,
+      //   _id: newFolderId
+      // };
+      this.addFolder({ folder: newFolder, parentId: folderId });
+      this.updateFolderToServer();
+    },
+
+    updateFolderToServer() {
+      this.updateFolder(this.currentFolder);
+    },
+
+    async addBookmark(newBookmark, folderId) {
       const bookmark = {
         ...newBookmark,
         _id: this.getBookmarksLength
       };
-      this.createBookmark({ bookmark: bookmark });
-      this.addBookmarkToFolder({
-        bookmarkId: bookmark._id,
+      // this.createBookmark({ bookmark: bookmark });
+      await this.addBookmarkToFolder({
+        bookmark: bookmark,
         folderId: folderId
       });
+      this.updateFolderToServer();
     }
   }
 };

@@ -28,8 +28,8 @@
         id="star-button"
         :icon="['far', 'star']"
         size="xs"
-        v-bind:class="{active: isStared}"
-        @click="starBookmark"
+        v-bind:class="{active: bookmark.stared}"
+        @click="starBookmark(bookmark)"
       />
     </div>
     <EditBookmarkModal
@@ -43,7 +43,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import EditBookmarkModal from "./Modal/EditBookmarkModal";
+import EditBookmarkModal from "../Modal/EditBookmarkModal";
 
 export default {
   props: {
@@ -70,8 +70,12 @@ export default {
       this.$emit("remove-bookmark-child", bookmark._id);
       this.deleteBookmark(bookmark._id);
     },
-    starBookmark() {
-      this.bookmark.stared = !this.bookmark.stared;
+    starBookmark(bookmark) {
+      bookmark.stared = !bookmark.stared;
+      this.editBookmark({
+        bookmarkId: bookmark._id,
+        bookmark: bookmark
+      });
     },
     editBookmarkHandle(bookmark) {
       this.showEditBookmarkModal = true;

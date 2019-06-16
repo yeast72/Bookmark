@@ -2,31 +2,15 @@ import axios from 'axios'
 
 const FOLDER_API = 'http://localhost:8000/folder/'
 const FOLDERS_API = 'http://localhost:8000/folders/'
-const BOOKMARK_API = 'http://localhost:8000/bookmark/'
-const BOOKMARKS_API = 'http://localhost:8000/bookmarks/'
+
 const USER_API = 'http://localhost:8000/user/'
 
-export async function getBookmarks() {
-    try {
-        const bookmarks = {}
-        const respone = await axios.get(BOOKMARKS_API)
-        respone.data.bookmarks.forEach(bookmark => {
-            bookmarks[bookmark._id] = bookmark
-        })
-        return bookmarks
-    } catch (err) {
-        return err
-    }
-}
+
 
 export async function getFolders() {
     try {
-        const folders = {}
         const respone = await axios.get(FOLDERS_API)
-        respone.data.folders.forEach(folder => {
-            folders[folder._id] = folder
-        })
-        return folders
+        return respone
     } catch (err) {
         return err
     }
@@ -44,6 +28,38 @@ export async function getRootFolder() {
 export async function getUserByName(username) {
     try {
         const respone = await axios.get(USER_API + username)
+        return respone
+    } catch (err) {
+        return err
+    }
+}
+
+
+export async function createFolder(folder) {
+    try {
+        const respone = await axios.post(FOLDER_API, {
+            folder: folder
+        })
+        return respone
+    } catch (err) {
+        return err
+    }
+}
+
+export async function updateFolder(folder) {
+    try {
+        const respone = await axios.put(FOLDER_API + `${folder._id}`, {
+            folder: folder
+        })
+        return respone
+    } catch (err) {
+        return err
+    }
+}
+
+export async function deleteFolder(folderId) {
+    try {
+        const respone = await axios.delete(FOLDER_API + `${folderId}`)
         return respone
     } catch (err) {
         return err

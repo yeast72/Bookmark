@@ -1,8 +1,7 @@
-import Vue from 'vue'
 import bookmarks from '../../data/bookmarks'
 import {
-    getBookmarks
-} from '../../../api/api';
+    getBookmarks,
+} from '../../../api/bookmark_api';
 
 const state = {
     bookmarks
@@ -18,7 +17,11 @@ const actions = {
     async fetchBookmarks({
         commit
     }) {
-        const bookmarks = await getBookmarks()
+        const bookmarks = {}
+        const respone = await getBookmarks()
+        respone.data.bookmarks.forEach(bookmark => {
+            bookmarks[bookmark._id] = bookmark
+        })
         commit('setBookmarks', bookmarks)
     },
     async createBookmark({
@@ -31,19 +34,15 @@ const actions = {
     async deleteBookmark({
         commit
     }, bookId) {
-        // const respone = await axios.delete(`http://localhost:8000/book/${bookId}`)
-        // if (respone.error) {
-        //     commit('errorHandling', respone.error)
-        // }
         commit('deleteBookmark', bookId)
     },
-    async editBookmark({
+    async updateBookmark({
         commit
     }, {
         bookmarkId,
         bookmark
     }) {
-        commit('editBookmark', {
+        commit('updateBookmark', {
             bookmarkId,
             bookmark
         })
@@ -52,7 +51,7 @@ const actions = {
 
 const mutations = {
     setBookmarks: (state, bookmarks) => (state.bookmarks = bookmarks),
-    editBookmark: (state, {
+    updateBookmark: (state, {
         bookmarkId,
         bookmark
     }) => {
@@ -62,7 +61,10 @@ const mutations = {
         }
     },
     createBookmark: (state, bookmark) => {
-        Vue.set(state.bookmarks, bookmark._id, bookmark)
+        state.bookmarks = {
+            ...state.bookmarks,
+            [bookmark._id]: bookmark
+        }
     },
     deleteBookmark: (state, bookId) => {
         state.bookmarks[bookId] = undefined

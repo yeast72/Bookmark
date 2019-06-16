@@ -1,7 +1,6 @@
-import axios from 'axios'
 import {
     getUserByName
-} from '../../../api/api';
+} from '../../../api/folder_api';
 
 const state = {
     user: {
@@ -16,11 +15,10 @@ const getters = {
 }
 
 const actions = {
-    fetchUser: async ({
+    async fetchUser({
         commit
-    }, username) => {
-        // const respone = await getUserByName(username)
-        const respone = await axios.get('http://localhost:8000/user/' + username)
+    }, username) {
+        const respone = await getUserByName(username)
         commit('setUser', respone.data.user[0])
     },
 

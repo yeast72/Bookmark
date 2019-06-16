@@ -43,7 +43,8 @@ export default {
       let newBookmark = {
         title: this.title,
         url: this.url,
-        completed: false
+        completed: false,
+        stared: false
       };
       this.$emit("add-bookmark", newBookmark);
       this.close();

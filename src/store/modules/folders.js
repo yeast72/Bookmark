@@ -1,8 +1,13 @@
 import folders from '../../data/folders'
 import Vue from 'vue'
 import {
-    getFolders
-} from '../../../api/api';
+    getFolders,
+    updateFolder,
+    createFolder
+} from '../../../api/folder_api'
+import {
+    createBookmark
+} from '../../../api/bookmark_api';
 
 const state = {
     folders
@@ -17,109 +22,115 @@ const actions = {
     fetchFolders: async ({
         commit
     }) => {
+        const folders = {}
         const respone = await getFolders()
-        commit('setFolders', respone)
+        respone.data.folders.forEach(folder => {
+            folders[folder._id] = folder
+        })
+        commit('setFolders', folders)
     },
-    async createFolder({
+
+    createFolder: async ({
         commit
-    }, folder) {
+    }, folder) => {
         commit('createFolder', folder)
     },
-    async addFolder({
-        commit
+
+    addFolder: async ({
+        commit,
+        dispatch
     }, {
-        folderId,
+        folder,
         parentId
-    }) {
+    }) => {
+        const respone = await createFolder(folder)
+        dispatch('createFolder', respone.data.folder)
         commit('addFolder', {
-            folderId,
-            parentId
+            folder: respone.data.folder,
+            parentId: parentId
         })
     },
-    async addBookmarkToFolder({
-        commit
+    addBookmarkToFolder: async ({
+        commit,
+        dispatch
     }, {
-        bookmarkId,
+        bookmark,
         folderId
-    }) {
+    }) => {
+        const respone = await createBookmark(bookmark)
+        const newBookmark = respone.data.bookmark
+        dispatch('createBookmark', {
+            bookmark: newBookmark
+        })
         commit('addBookmarkToFolder', {
-            bookmarkId,
+            bookmark: newBookmark,
             folderId
         })
     },
-    async deleteBookmarkInFolder({
+    deleteBookmarkInFolder: async ({
         commit
     }, {
         folderId,
         bookId
-    }) {
-        // const respone = await axios.delete(`http://localhost:8000/book/${bookId}`)
-        // if (respone.error) {
-        //     commit('errorHandling', respone.error)
-        // }
+    }) => {
         commit('deleteBookmarkInFolder', {
             folderId,
             bookId
         })
     },
-    async editBookmarkInFolder({
-        commit
-    }, {
-        folderId,
-        updBookmark
-    }) {
-        commit('editBookmarkInFolder', {
-            folderId,
-            updBookmark
-        })
-    },
-    async removeBookmarkChild({
+    removeBookmarkChild: async ({
         commit
     }, {
         folderId,
         bookmarkId
-    }) {
+    }) => {
         commit('removeBookmarkChild', {
             folderId,
             bookmarkId
         })
+    },
+    updateFolder: async ({
+        commit
+    }, folder) => {
+        await updateFolder(folder)
     }
-
 }
 
 const mutations = {
 
-    setFolders: (state, folders) => (state.folders = folders),
-    createFolder: (state, newFolder) => {
+    setFolders(state, folders) {
+        state.folders = folders
+    },
+    createFolder(state, newFolder) {
         const index = newFolder._id
         Vue.set(state.folders, index, newFolder)
     },
-    removeBookmarkChild: (state, {
+    removeBookmarkChild(state, {
         folderId,
         bookmarkId
-    }) => {
+    }) {
         const newBookmarksId = state.folders[folderId].bookmarksId.filter(id => id.toString() !== bookmarkId.toString())
         state.folders[folderId] = {
             ...state.folders[folderId],
             bookmarksId: newBookmarksId
         }
     },
-    addFolder: (state, {
-        folderId,
+    addFolder(state, {
+        folder,
         parentId
-    }) => {
-        state.folders[parentId].childFolderId.push(folderId)
+    }) {
+        state.folders[parentId].childFolderId.push(folder._id)
     },
-    addBookmarkToFolder: (state, {
-        bookmarkId,
+    addBookmarkToFolder(state, {
+        bookmark,
         folderId
-    }) => {
-        state.folders[folderId].bookmarksId.push(bookmarkId)
+    }) {
+        state.folders[folderId].bookmarksId.push(bookmark._id)
     },
-    deleteBookmarkInFolder: (state, {
+    deleteBookmarkInFolder(state, {
         folderId,
         bookId
-    }) => {
+    }) {
         const index = state.folders.findIndex(folder => folder._id === folderId)
         if (index !== -1) {
             state.folders[index].bookmarks = state.folders[index].bookmarks.filter(bookmark => {
@@ -127,18 +138,6 @@ const mutations = {
             })
         }
     },
-    editBookmarkInFolder(state, {
-        folderId,
-        updBookmark
-    }) {
-        const folIndex = state.folders.findIndex(folder => folder._id.toString() === folderId.toString())
-        if (folIndex !== -1) {
-            const bookIndex = state.folders[folIndex].bookmarks.findIndex(bookmark => bookmark._id.toString() === updBookmark._id.toString())
-            state.folders[folIndex].bookmarks.splice(bookIndex, 1, updBookmark)
-        }
-
-
-    }
 }
 
 export default {

@@ -7,15 +7,12 @@
     <div class="modal-body">
       <label class="form-label">
         Name
-        <input type="text" v-model="name" placeholder="New bookmark title...">
+        <input type="text" v-model="folder.name" placeholder="New bookmark title...">
       </label>
     </div>
 
     <div class="modal-footer text-right">
-      <button
-        class="modal-default-button"
-        @click="save({name: name, bookmarksId: [], _id: '321321312312', childFolderId: []})"
-      >Save</button>
+      <button class="modal-default-button" @click="save({name:folder.name,...folder})">Save</button>
       <button class="modal-default-button" @click="close">Cancel</button>
     </div>
   </Modal>
@@ -25,21 +22,16 @@
 import Modal from "./Modal";
 export default {
   components: { Modal },
-  data() {
-    return {
-      name: ""
-    };
-  },
   props: {
-    show: Boolean
+    show: Boolean,
+    folder: Object
   },
   methods: {
     close() {
       this.$emit("close-modal");
-      this.name = "";
     },
     save(folder) {
-      this.$emit("add-folder", folder);
+      this.$emit("edit-folder", folder);
       this.close();
     }
   }

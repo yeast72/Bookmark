@@ -1,11 +1,12 @@
 <template>
   <div>
-    <h1>Folders</h1>
     <ul>
       <FolderNode
         class="folder"
         :key="rootFolder._id"
+        :selectedFolderId="selectedFolderId"
         @selected-folder="showBookmark($event)"
+        :isRoot="true"
         :folder="rootFolder"
       ></FolderNode>
     </ul>
@@ -17,7 +18,11 @@
 import FolderNode from "./FolderNode";
 export default {
   props: {
-    rootFolder: Object
+    rootFolder: Object,
+    selectedFolderId: String
+  },
+  data() {
+    return { editedFolder: null };
   },
   components: { FolderNode },
   methods: {

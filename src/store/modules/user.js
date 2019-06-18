@@ -5,7 +5,7 @@ import {
 const state = {
     user: {
         usrename: "",
-        rootFolderId: "",
+        rootFolderId: 0,
     }
 };
 

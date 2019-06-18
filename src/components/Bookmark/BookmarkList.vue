@@ -16,7 +16,7 @@
 
 <script>
 import BookmarkItem from "./BookmarkItem";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   props: {
@@ -26,7 +26,7 @@ export default {
   computed: {
     ...mapGetters(["getBookmarkById"]),
     haveBookmark() {
-      return this.bookmarks.length;
+      return this.bookmarks.length > 0;
     }
   },
   methods: {}

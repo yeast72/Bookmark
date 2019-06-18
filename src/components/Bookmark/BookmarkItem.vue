@@ -1,5 +1,5 @@
 <template>
-  <li class="bookmark-item" v-bind:class="{'is-complete':bookmark.completed}">
+  <li v-if="bookmark" class="bookmark-item" v-bind:class="{'is-complete':bookmark.completed}">
     <div>{{bookmark.title}}</div>
     <div class="bookmarkitem-container-button">
       <font-awesome-icon

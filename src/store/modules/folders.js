@@ -91,8 +91,15 @@ const actions = {
     },
     updateFolder: async ({
         commit
-    }, folder) => {
-        await updateFolder(folder)
+    }, {
+        folderId,
+        folder
+    }) => {
+        await updateFolder(folderId, folder)
+        commit('updateFolder', {
+            folderId,
+            folder
+        })
     }
 }
 
@@ -138,6 +145,12 @@ const mutations = {
             })
         }
     },
+    updateFolder(state, {
+        folderId,
+        folder
+    }) {
+        state.folders[folderId] = folder
+    }
 }
 
 export default {

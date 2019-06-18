@@ -1,6 +1,11 @@
 <template>
   <div class="app" v-if="rootFolder">
-    <FolderTree @show-bookmark="showBookmark" :rootFolder="rootFolder" class="folder-container"></FolderTree>
+    <FolderTree
+      @show-bookmark="showBookmark"
+      :selectedFolderId="currentFolder._id"
+      :rootFolder="rootFolder"
+      class="folder-container"
+    ></FolderTree>
     <div class="bookmarklist-container">
       <div class="button-container">
         <h1>{{ currentFolder.name }}</h1>
@@ -66,7 +71,7 @@ export default {
       return this.getFolderById(this.getRootFolderId);
     }
   },
-  created() {
+  mounted() {
     this.fetchBookmarks();
     this.fetchFolders();
     this.fetchUser("yeast");
@@ -100,12 +105,15 @@ export default {
       //   ...newFolder,
       //   _id: newFolderId
       // };
-      this.addFolder({ folder: newFolder, parentId: folderId });
+      await this.addFolder({ folder: newFolder, parentId: folderId });
       this.updateFolderToServer();
     },
 
     updateFolderToServer() {
-      this.updateFolder(this.currentFolder);
+      this.updateFolder({
+        folderId: this.currentFolder._id,
+        folder: this.currentFolder
+      });
     },
 
     async addBookmark(newBookmark, folderId) {
@@ -129,7 +137,7 @@ export default {
 .app {
   display: flex;
   flex-direction: row;
-  background-color: rgb(175, 130, 47);
+  background-color: antiquewhite;
   padding: 20px 10px;
 }
 .folder-container {

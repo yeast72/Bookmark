@@ -46,9 +46,9 @@ export async function createFolder(folder) {
     }
 }
 
-export async function updateFolder(folder) {
+export async function updateFolder(folderId, folder) {
     try {
-        const respone = await axios.put(FOLDER_API + `${folder._id}`, {
+        const respone = await axios.put(FOLDER_API + `${folderId}`, {
             folder: folder
         })
         return respone

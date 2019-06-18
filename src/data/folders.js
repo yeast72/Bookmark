@@ -1,18 +1,18 @@
 export default {
-    0: {
-        _id: 0,
+    "0": {
+        _id: "0",
         name: 'folder1',
         bookmarksId: [0],
-        childFolderId: [1, 2]
+        childFolderId: ["1", "2"]
     },
-    1: {
-        _id: 1,
+    "1": {
+        _id: "1",
         name: 'folder2',
         bookmarksId: [0, 1],
         childFolderId: []
     },
-    2: {
-        _id: 2,
+    "2": {
+        _id: "2",
         name: 'folder3',
         bookmarksId: [1, 2],
         childFolderId: []

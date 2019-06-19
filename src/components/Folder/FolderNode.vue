@@ -26,7 +26,7 @@
           id="trash-button"
           :icon="['far', 'trash-alt']"
           size="xs"
-          @click="deleteFolderHandle(folder)"
+          @click="deleteFolderHandle(folder._id)"
         />
         <font-awesome-icon
           title="rename"
@@ -43,6 +43,7 @@
       <FolderNode
         class="folder"
         :selectedFolderId="selectedFolderId"
+        @delete-folder="$emit('delete-folder', $event)"
         @selected-folder="$emit('selected-folder',$event)"
         v-for="(id) in folder.childFolderId"
         :key="id"
@@ -107,7 +108,9 @@ export default {
     selectedFolder() {
       this.$emit("selected-folder", this.folder._id);
     },
-    deleteFolderHandle(folder) {},
+    deleteFolderHandle(folderId) {
+      this.$emit("delete-folder", folderId);
+    },
     editFolderHandle(folder) {
       this.showEditFolderModal = true;
       this.beforeEditCache = { ...folder };

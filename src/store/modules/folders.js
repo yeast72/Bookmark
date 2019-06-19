@@ -3,7 +3,8 @@ import Vue from 'vue'
 import {
     getFolders,
     updateFolder,
-    createFolder
+    createFolder,
+    deleteFolder
 } from '../../../api/folder_api'
 import {
     createBookmark
@@ -16,6 +17,11 @@ const state = {
 const getters = {
     getFolderById: (state) => (folderId) => (state.folders[folderId]),
     getAllFolders: (state) => state.folders,
+    getParentFolderById: (state) => (folderId) => {
+        return Object.keys(state.folders).find(folder => {
+            return state.folders[folder].childFolderId.find(id => id.toString() === folderId.toString())
+        })
+    }
 }
 
 const actions = {
@@ -100,7 +106,7 @@ const actions = {
             folderId,
             folder
         })
-    }
+    },
 }
 
 const mutations = {
@@ -150,7 +156,8 @@ const mutations = {
         folder
     }) {
         state.folders[folderId] = folder
-    }
+    },
+
 }
 
 export default {

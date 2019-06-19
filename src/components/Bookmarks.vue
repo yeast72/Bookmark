@@ -2,6 +2,7 @@
   <div class="app" v-if="rootFolder">
     <FolderTree
       @show-bookmark="showBookmark"
+      @delete-folder="deleteFolderHandler"
       :selectedFolderId="currentFolder._id"
       :rootFolder="rootFolder"
       class="folder-container"
@@ -39,6 +40,7 @@ import NewBookmarkModal from "./Modal/NewBookmarkModal";
 import NewFolderModal from "./Modal/NewFolderModal";
 import FolderTree from "./Folder/FolderTree";
 import BookmarkList from "./Bookmark/BookmarkList";
+import { deleteFolder } from "../../api/folder_api";
 
 export default {
   name: "BookMark",
@@ -60,7 +62,8 @@ export default {
       "getFolderById",
       "getRootFolderId",
       "getAllFolders",
-      "getBookmarksLength"
+      "getBookmarksLength",
+      "getParentFolderById"
     ]),
     currentFolder() {
       return this.selectedFolderId === ""
@@ -100,11 +103,6 @@ export default {
     },
 
     async addNewFolder(newFolder, folderId) {
-      // let newFolderId = Object.keys(this.getAllFolders).length;
-      // const folder = {
-      //   ...newFolder,
-      //   _id: newFolderId
-      // };
       await this.addFolder({ folder: newFolder, parentId: folderId });
       this.updateFolderToServer();
     },
@@ -121,12 +119,24 @@ export default {
         ...newBookmark,
         _id: this.getBookmarksLength
       };
-      // this.createBookmark({ bookmark: bookmark });
       await this.addBookmarkToFolder({
         bookmark: bookmark,
         folderId: folderId
       });
       this.updateFolderToServer();
+    },
+    async deleteFolderHandler(folderId) {
+      const parentId = this.getParentFolderById(folderId);
+
+      // this.selectedFolderId
+      await deleteFolder(folderId);
+      await this.loadData();
+      this.selectedFolderId = parentId;
+    },
+    loadData() {
+      this.fetchUser("yeast");
+      this.fetchFolders();
+      this.fetchBookmarks();
     }
   }
 };

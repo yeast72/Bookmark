@@ -5,6 +5,7 @@
         class="folder"
         :key="rootFolder._id"
         :selectedFolderId="selectedFolderId"
+        @delete-folder="deleteFolder($event)"
         @selected-folder="showBookmark($event)"
         :isRoot="true"
         :folder="rootFolder"
@@ -28,6 +29,9 @@ export default {
   methods: {
     showBookmark(selectedFolderId) {
       this.$emit("show-bookmark", selectedFolderId);
+    },
+    deleteFolder(folderId) {
+      this.$emit("delete-folder", folderId);
     }
   }
 };

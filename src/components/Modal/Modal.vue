@@ -1,7 +1,7 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask" v-if="isShow" @click="close">
-      <div class="modal-container" @click.stop>
+    <div class="modal-mask" v-if="isShow" @click="shake">
+      <div class="modal-container" :class="{shake: animation}" @click.stop>
         <slot></slot>
       </div>
     </div>
@@ -9,15 +9,31 @@
 </template>
 
 <script>
+import Vue from "vue";
+
 export default {
   props: ["show"],
+  data() {
+    return {
+      animation: false
+    };
+  },
   computed: {
     isShow() {
       return this.show;
     }
   },
   methods: {
+    async shake() {
+      if (this.animation) {
+        this.animation = false;
+        await Vue.nextTick();
+      }
+      this.animation = true;
+      // this.animation = null;
+    },
     close() {
+      this.animation = false;
       this.$emit("close-modal");
     }
   },
@@ -44,7 +60,8 @@ export default {
 }
 
 .modal-container {
-  width: 300px;
+  min-width: 300px;
+  max-width: 500px;
   margin: 40px auto 0;
   padding: 20px 30px;
   background-color: #fff;
@@ -84,15 +101,6 @@ export default {
   border: 1px solid #ddd;
 }
 
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
-
 .modal-enter {
   opacity: 0;
 }
@@ -105,5 +113,30 @@ export default {
 .modal-leave-active .modal-container {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
+}
+
+.shake {
+  animation: shake 0.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+@keyframes shake {
+  10% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  35% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  75% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  90% {
+    transform: translate3d(4px, 0, 0);
+  }
 }
 </style>

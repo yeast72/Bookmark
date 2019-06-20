@@ -5,14 +5,16 @@
     </div>
 
     <div class="modal-body">
-      <label class="form-label">
-        Title
+      <div class="form-label">
+        Title :
         <input type="text" v-model="bookmark.title" placeholder="New bookmark title...">
-      </label>
-      <label class="form-label">
-        URL
+        <span v-if="titleError" class="error-validation">Error</span>
+      </div>
+      <div class="form-label">
+        URL :
         <input type="text" v-model="bookmark.url" placeholder="New bookmark URL">
-      </label>
+        <span v-if="urlError" class="error-validation">Error</span>
+      </div>
     </div>
 
     <div class="modal-footer text-right">
@@ -28,22 +30,49 @@ export default {
   components: { Modal },
   data() {
     return {
-      title: "",
-      url: ""
+      titleError: false,
+      urlError: false
     };
   },
-  props: ["show", "bookmark"],
+  props: {
+    show: Boolean,
+    bookmark: Object
+  },
+  computed: {
+    haveError() {
+      return this.titleError || this.urlError;
+    }
+  },
   methods: {
+    checkForm() {
+      this.titleError = false;
+      this.urlError = false;
+      if (!this.bookmark.title) {
+        this.titleError = true;
+      }
+      if (!this.bookmark.url) {
+        this.urlError = true;
+      }
+    },
     close() {
+      this.titleError = false;
+      this.urlError = false;
       this.$emit("close-modal");
-      this.title = "";
-      this.url = "";
     },
     saveBookmark(newTitle, newURL) {
-      const newBook = { ...this.bookmark, title: newTitle, url: newURL };
-      this.$emit("edit-bookmark", newBook);
-      this.close();
+      this.checkForm();
+      if (!this.haveError) {
+        const newBook = { ...this.bookmark, title: newTitle, url: newURL };
+        this.$emit("edit-bookmark", newBook);
+        this.close();
+      }
     }
   }
 };
 </script>
+
+<style scoped>
+.error-validation {
+  color: red;
+}
+</style>

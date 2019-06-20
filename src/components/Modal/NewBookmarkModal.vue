@@ -5,14 +5,14 @@
     </div>
 
     <div class="modal-body">
-      <label class="form-label">
-        Title
+      <div>
+        Title:
         <input type="text" v-model="title" placeholder="New bookmark title...">
-      </label>
-      <label class="form-label">
-        URL
+      </div>
+      <div>
+        URL:
         <input type="text" v-model="url" placeholder="New bookmark URL">
-      </label>
+      </div>
     </div>
 
     <div class="modal-footer text-right">
@@ -32,7 +32,9 @@ export default {
       url: ""
     };
   },
-  props: ["show"],
+  props: {
+    show: Boolean
+  },
   methods: {
     close() {
       this.$emit("close-modal");

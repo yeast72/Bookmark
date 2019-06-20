@@ -1,13 +1,18 @@
 <template>
-  <li v-if="bookmark" class="bookmark-item" v-bind:class="{'is-complete':bookmark.completed}">
-    <div>{{bookmark.title}}</div>
-    <div class="bookmarkitem-container-button">
+  <li v-if="bookmark" class="bookmarkitem" v-bind:class="{'is-complete':bookmark.completed}">
+    <div class="bookmarkitem-detail-container">
+      <a class="bookmarkitem-detail-title" :href="bookmark.url" target="_blank">
+        {{bookmark.title}}
+        <span class="bookmarkitem-detail-url">-{{bookmark.url}}</span>
+      </a>
+    </div>
+    <div class="bookmarkitem-button-container">
       <font-awesome-icon
         class="bookitem-button"
         id="check-button"
         :icon="['fas','check']"
         size="xs"
-        @click="markComplete"
+        @click="markComplete(bookmark)"
       />
       <font-awesome-icon
         class="bookitem-button"
@@ -62,9 +67,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["deleteBookmark", "editBookmark", "removeBookmarkChild"]),
-    markComplete() {
-      this.bookmark.completed = !this.bookmark.completed;
+    ...mapActions(["deleteBookmark", "updateBookmark", "removeBookmarkChild"]),
+    markComplete(bookmark) {
+      bookmark.completed = !bookmark.completed;
+      this.updateBookmark({
+        bookmarkId: bookmark._id,
+        bookmark: bookmark
+      });
     },
     deleteBookmarkHandle(bookmark) {
       this.$emit("remove-bookmark-child", bookmark._id);
@@ -72,7 +81,7 @@ export default {
     },
     starBookmark(bookmark) {
       bookmark.stared = !bookmark.stared;
-      this.editBookmark({
+      this.updateBookmark({
         bookmarkId: bookmark._id,
         bookmark: bookmark
       });
@@ -86,7 +95,7 @@ export default {
       if (!this.editedBookmark) {
         return;
       }
-      this.editBookmark({
+      this.updateBookmark({
         bookmarkId: this.bookmark._id,
         bookmark: bookmark
       });
@@ -113,7 +122,7 @@ li {
 .is-complete {
   text-decoration: line-through;
 }
-.bookmark-item {
+.bookmarkitem {
   border: 1px solid #979797;
   border-radius: 5px;
   background-color: white;
@@ -121,14 +130,25 @@ li {
   cursor: pointer;
 }
 
-.bookmark-item:hover .bookitem-button {
-  visibility: visible;
+.bookmarkitem:hover {
+  & .bookitem-button {
+    visibility: visible;
+  }
 }
 
-.bookmark-detail {
-  flex: 2;
+.bookmarkitem-detail-container {
+  margin: auto;
 }
-.bookmarkitem-container-button {
+
+.bookmarkitem-detail-url {
+  padding-left: 1em;
+  color: #979797;
+}
+
+.bookmarkitem-detail-title {
+}
+
+.bookmarkitem-button-container {
   flex: 1;
   text-align: right;
   padding-right: 1em;
@@ -144,7 +164,7 @@ li {
   font-size: 20px;
 }
 
-.bookmark-item {
+.bookmarkitem {
   &:hover {
     opacity: 1;
   }

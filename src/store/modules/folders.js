@@ -49,12 +49,21 @@ const actions = {
         folder,
         parentId
     }) => {
-        const respone = await createFolder(folder)
-        dispatch('createFolder', respone.data.folder)
-        commit('addFolder', {
-            folder: respone.data.folder,
-            parentId: parentId
-        })
+        try {
+            const respone = await createFolder(folder)
+            dispatch('createFolder', respone.data.folder)
+            commit('addFolder', {
+                folder: respone.data.folder,
+                parentId: parentId
+            })
+        } catch (err) {
+            dispatch('createFolder', folder)
+            commit('addFolder', {
+                folder: folder,
+                parentId: parentId
+            })
+        }
+
     },
     addBookmarkToFolder: async ({
         commit,
@@ -63,15 +72,26 @@ const actions = {
         bookmark,
         folderId
     }) => {
-        const respone = await createBookmark(bookmark)
-        const newBookmark = respone.data.bookmark
-        dispatch('createBookmark', {
-            bookmark: newBookmark
-        })
-        commit('addBookmarkToFolder', {
-            bookmark: newBookmark,
-            folderId
-        })
+        try {
+            const respone = await createBookmark(bookmark)
+            const newBookmark = respone.data.bookmark
+            dispatch('createBookmark', {
+                bookmark: newBookmark
+            })
+            commit('addBookmarkToFolder', {
+                bookmark: newBookmark,
+                folderId
+            })
+        } catch (err) {
+            dispatch('createBookmark', {
+                bookmark: bookmark
+            })
+            commit('addBookmarkToFolder', {
+                bookmark: bookmark,
+                folderId
+            })
+        }
+
     },
     deleteBookmarkInFolder: async ({
         commit
@@ -107,6 +127,11 @@ const actions = {
             folder
         })
     },
+    deleteFolder: async ({
+        commit
+    }, folderId) => {
+        commit('deleteFolder', folderId)
+    }
 }
 
 const mutations = {
@@ -157,7 +182,13 @@ const mutations = {
     }) {
         state.folders[folderId] = folder
     },
-
+    deleteFolder(state, folderId) {
+        const parentFolder = Object.keys(state.folders).find(folder => {
+            return state.folders[folder].childFolderId.find(id => id.toString() === folderId.toString())
+        })
+        state.folders[parentFolder].childFolderId = state.folders[parentFolder].childFolderId.filter(id => id.toString() !== folderId.toString())
+        delete state.folders[folderId]
+    }
 }
 
 export default {

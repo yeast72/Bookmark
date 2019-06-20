@@ -22,9 +22,9 @@ export async function createBookmark(bookmark) {
     }
 }
 
-export async function updateBookmark(bookmark) {
+export async function updateBookmark(bookmarkId, bookmark) {
     try {
-        const respone = await axios.put(BOOKMARK_API + `${bookmark._id}`, {
+        const respone = await axios.put(BOOKMARK_API + `${bookmarkId}`, {
             bookmark: bookmark
         })
         return respone
@@ -35,7 +35,7 @@ export async function updateBookmark(bookmark) {
 
 export async function deleteBookmark(bookmarkId) {
     try {
-        const respone = await axios.put(BOOKMARK_API + `${bookmarkId}`)
+        const respone = await axios.delete(BOOKMARK_API + `${bookmarkId}`)
         return respone
     } catch (err) {
         return err

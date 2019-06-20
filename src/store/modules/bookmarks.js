@@ -1,6 +1,8 @@
 import bookmarks from '../../data/bookmarks'
 import {
     getBookmarks,
+    updateBookmark,
+    deleteBookmark
 } from '../../../api/bookmark_api';
 
 const state = {
@@ -33,8 +35,9 @@ const actions = {
     },
     async deleteBookmark({
         commit
-    }, bookId) {
-        commit('deleteBookmark', bookId)
+    }, bookmarkId) {
+        await deleteBookmark(bookmarkId)
+        commit('deleteBookmark', bookmarkId)
     },
     async updateBookmark({
         commit
@@ -42,6 +45,7 @@ const actions = {
         bookmarkId,
         bookmark
     }) {
+        await updateBookmark(bookmarkId, bookmark)
         commit('updateBookmark', {
             bookmarkId,
             bookmark
@@ -66,9 +70,10 @@ const mutations = {
             [bookmark._id]: bookmark
         }
     },
-    deleteBookmark: (state, bookId) => {
-        state.bookmarks[bookId] = undefined
-        state.bookmarks = JSON.parse(JSON.stringify(state.bookmarks));
+    deleteBookmark: (state, bookmarkId) => {
+        delete state.bookmarks[bookmarkId]
+        // state.bookmarks[bookmarkId] = undefined
+        // state.bookmarks = JSON.parse(JSON.stringify(state.bookmarks));
     },
     errorHandling: (state, error) => state.error = error
 };

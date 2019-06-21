@@ -8,6 +8,7 @@
       <label class="form-label">
         Name
         <input type="text" v-model="folder.name" placeholder="New bookmark title...">
+        <span v-if="nameError" class="error-validation">Error</span>
       </label>
     </div>
 
@@ -26,13 +27,32 @@ export default {
     show: Boolean,
     folder: Object
   },
+  data() {
+    return {
+      nameError: false
+    };
+  },
+  computed: {
+    haveError() {
+      return this.nameError;
+    }
+  },
   methods: {
+    checkForm() {
+      this.nameError = false;
+      if (!this.folder.name) {
+        this.nameError = true;
+      }
+    },
     close() {
       this.$emit("close-modal");
     },
     save(folder) {
-      this.$emit("edit-folder", folder);
-      this.close();
+      this.checkForm();
+      if (!this.haveError) {
+        this.$emit("edit-folder", folder);
+        this.close();
+      }
     }
   }
 };

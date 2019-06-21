@@ -8,6 +8,7 @@
       <label class="form-label">
         Name
         <input type="text" v-model="name" placeholder="New bookmark title...">
+        <span v-if="nameError" class="error-validation">Error</span>
       </label>
     </div>
 
@@ -27,21 +28,42 @@ export default {
   components: { Modal },
   data() {
     return {
-      name: ""
+      name: "",
+      nameError: false
     };
+  },
+  computed: {
+    haveError() {
+      return this.nameError;
+    }
   },
   props: {
     show: Boolean
   },
   methods: {
+    checkForm() {
+      this.nameError = false;
+      if (!this.name) {
+        this.nameError = true;
+      }
+    },
     close() {
       this.$emit("close-modal");
       this.name = "";
     },
     save(folder) {
-      this.$emit("add-folder", folder);
-      this.close();
+      this.checkForm();
+      if (!this.haveError) {
+        this.$emit("add-folder", folder);
+        this.close();
+      }
     }
   }
 };
 </script>
+
+<style scoped>
+.error-validation {
+  color: red;
+}
+</style>

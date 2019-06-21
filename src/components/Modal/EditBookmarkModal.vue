@@ -7,12 +7,22 @@
     <div class="modal-body">
       <div class="form-label">
         Title :
-        <input type="text" v-model="bookmark.title" placeholder="New bookmark title...">
+        <input
+          type="text"
+          v-model="bookmark.title"
+          placeholder="New bookmark title..."
+          @keyup.enter="saveBookmark(bookmark.title,bookmark.url)"
+        >
         <span v-if="titleError" class="error-validation">Error</span>
       </div>
       <div class="form-label">
         URL :
-        <input type="text" v-model="bookmark.url" placeholder="New bookmark URL">
+        <input
+          type="text"
+          v-model="bookmark.url"
+          placeholder="New bookmark URL"
+          @keyup.enter="saveBookmark(bookmark.title,bookmark.url)"
+        >
         <span v-if="urlError" class="error-validation">Error</span>
       </div>
     </div>
@@ -62,6 +72,9 @@ export default {
     saveBookmark(newTitle, newURL) {
       this.checkForm();
       if (!this.haveError) {
+        if (!newURL.includes("http://") && !newURL.includes("https://")) {
+          newURL = `http://${newURL}`;
+        }
         const newBook = { ...this.bookmark, title: newTitle, url: newURL };
         this.$emit("edit-bookmark", newBook);
         this.close();

@@ -7,18 +7,28 @@
     <div class="modal-body">
       <div>
         Title:
-        <input type="text" v-model="title" placeholder="New bookmark title...">
-        <span v-if="titleError" class="error-validation">Error</span>
+        <input
+          type="text"
+          v-model="title"
+          placeholder="New bookmark title..."
+          @keyup.enter="saveBookmark(title, url)"
+        >
+        <span v-if="titleError" class="error-validation">Invalid title</span>
       </div>
       <div>
         URL:
-        <input type="text" v-model="url" placeholder="New bookmark URL">
-        <span v-if="urlError" class="error-validation">Error</span>
+        <input
+          type="text"
+          v-model="url"
+          placeholder="New bookmark URL"
+          @keyup.enter="saveBookmark(title, url)"
+        >
+        <span v-if="urlError" class="error-validation">Invalid URL</span>
       </div>
     </div>
 
     <div class="modal-footer text-right">
-      <button class="modal-default-button" @click="save">Save</button>
+      <button class="modal-default-button" @click="saveBookmark(title, url)">Save</button>
       <button @click="close">Cancel</button>
     </div>
   </Modal>
@@ -26,6 +36,7 @@
 
 <script>
 import Modal from "./Modal";
+
 export default {
   components: { Modal },
   data() {
@@ -62,12 +73,16 @@ export default {
       this.titleError = false;
       this.urlError = false;
     },
-    save() {
+    saveBookmark(newName, nameUrl) {
       this.checkForm();
+
       if (!this.haveError) {
+        if (!nameUrl.includes("http://") && !nameUrl.includes("https://")) {
+          nameUrl = `http://${nameUrl}`;
+        }
         let newBookmark = {
-          title: this.title,
-          url: this.url,
+          title: newName,
+          url: nameUrl,
           completed: false,
           stared: false
         };

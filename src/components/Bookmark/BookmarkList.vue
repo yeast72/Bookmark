@@ -1,7 +1,6 @@
 <template>
   <div v-if="haveItem" class="bookmarklist-box">
     <ul>
-      <FolderItem :key="folderId" v-for="folderId in folders" :folder="getFolderById(folderId)"/>
       <BookmarkItem
         :key="bookmarkId"
         v-for="bookmarkId in bookmarks"

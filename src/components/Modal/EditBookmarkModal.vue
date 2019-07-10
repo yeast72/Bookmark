@@ -13,7 +13,7 @@
           placeholder="New bookmark title..."
           @keyup.enter="saveBookmark(bookmark.title,bookmark.url)"
         >
-        <span v-if="titleError" class="error-validation">Error</span>
+        <span v-if="titleError" class="error-validation">Invalid title</span>
       </div>
       <div class="form-label">
         URL :
@@ -23,7 +23,7 @@
           placeholder="New bookmark URL"
           @keyup.enter="saveBookmark(bookmark.title,bookmark.url)"
         >
-        <span v-if="urlError" class="error-validation">Error</span>
+        <span v-if="urlError" class="error-validation">Invalid URL</span>
       </div>
     </div>
 

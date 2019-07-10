@@ -1,9 +1,10 @@
 <template>
-  <div v-if="haveBookmark" class="bookmarklist-box">
+  <div v-if="haveItem" class="bookmarklist-box">
     <ul>
+      <FolderItem :key="folderId" v-for="folderId in folders" :folder="getFolderById(folderId)"/>
       <BookmarkItem
-        :key="index"
-        v-for="(bookmarkId, index) in bookmarks"
+        :key="bookmarkId"
+        v-for="bookmarkId in bookmarks"
         :bookmark="getBookmarkById(bookmarkId)"
         @remove-bookmark-child="$emit('remove-bookmark-child', $event)"
       />
@@ -16,17 +17,19 @@
 
 <script>
 import BookmarkItem from "./BookmarkItem";
+import FolderItem from "./FolderItem";
 import { mapGetters } from "vuex";
 
 export default {
   props: {
-    bookmarks: Array
+    bookmarks: Array,
+    folders: Array
   },
-  components: { BookmarkItem },
+  components: { BookmarkItem, FolderItem },
   computed: {
-    ...mapGetters(["getBookmarkById"]),
-    haveBookmark() {
-      return this.bookmarks.length > 0;
+    ...mapGetters(["getBookmarkById", "getFolderById"]),
+    haveItem() {
+      return this.bookmarks.length || this.folders.length;
     }
   },
   methods: {}

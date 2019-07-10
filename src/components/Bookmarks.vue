@@ -14,6 +14,7 @@
         <button @click="openAddFolderModal">Add Folder</button>
       </div>
       <BookmarkList
+        :folders="currentFolder.childFolderId"
         :bookmarks="currentFolder.bookmarksId"
         @remove-bookmark-child="removeBookmarkChild({folderId: currentFolder._id, bookmarkId: $event})"
       ></BookmarkList>
